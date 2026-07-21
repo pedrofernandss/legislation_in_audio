@@ -6,7 +6,6 @@ import { STATUS_PROGRESS } from '../constants/status'
 import { Header } from '../components/Header'
 import { Eyebrow } from '../components/Eyebrow'
 import { SectionNumber } from '../components/SectionNumber'
-import { OrnamentalDivider } from '../components/OrnamentalDivider'
 import { Reveal } from '../components/Reveal'
 import { PrimaryButton } from '../components/PrimaryButton'
 import { UploadForm } from '../components/UploadForm'
@@ -56,7 +55,7 @@ export function UsePage() {
       <Header />
 
       <main className="mx-auto w-full max-w-[1080px] px-5 sm:px-10">
-        <section className="flex flex-col gap-8 py-[clamp(56px,9vh,88px)] sm:flex-row sm:items-end sm:justify-between">
+        <section className="flex flex-col gap-8 py-[clamp(40px,6vh,64px)] sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-lg">
             <Eyebrow className="mb-5">Usar o sistema</Eyebrow>
             <h1 className="mb-5 font-serif text-[clamp(2.1rem,4.5vw,3rem)] font-normal leading-[1.12] text-ink">
@@ -73,10 +72,10 @@ export function UsePage() {
           </PrimaryButton>
         </section>
 
-        <OrnamentalDivider />
+        <hr className="border-t border-surface-border/15" />
 
-        <section className="py-[clamp(56px,9vh,96px)]">
-          <div className="grid grid-cols-1 gap-14 lg:grid-cols-2">
+        <section className="py-[clamp(32px,5vh,56px)]">
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
             <Reveal as="div" variant="fade">
               <SectionNumber>i.</SectionNumber>
               <Eyebrow className="mb-3.5">Enviar arquivo</Eyebrow>
@@ -104,7 +103,7 @@ export function UsePage() {
 
         <hr className="border-t border-surface-border/15" />
 
-        <section className="py-[clamp(56px,9vh,96px)]">
+        <section className="py-[clamp(40px,6vh,72px)]">
           <Reveal as="div" variant="focus" className="mb-8">
             <SectionNumber>iii.</SectionNumber>
             <Eyebrow>Resultados</Eyebrow>

@@ -3,7 +3,6 @@ import { Header } from '../components/Header'
 import { AnimatedHero } from '../components/AnimatedHero'
 import { Reveal } from '../components/Reveal'
 import { Eyebrow } from '../components/Eyebrow'
-import { OrnamentalDivider } from '../components/OrnamentalDivider'
 import { FeatureRow } from '../components/FeatureRow'
 import { PrimaryButton } from '../components/PrimaryButton'
 import { DocumentScanIcon } from '../components/icons/DocumentScanIcon'
@@ -11,8 +10,8 @@ import { ChaptersIcon } from '../components/icons/ChaptersIcon'
 import { WaveformIcon } from '../components/icons/WaveformIcon'
 
 const NAV_LINKS = [
-  { label: 'Recursos', href: '#recursos' },
-  { label: 'Como funciona', href: '#como-funciona' },
+  { label: 'Como funciona', href: '#recursos' },
+  { label: 'Começar', href: '#comecar' },
 ]
 
 function NavLink({ label, href }) {
@@ -32,7 +31,7 @@ export function LandingPage() {
       <Header center={NAV_LINKS.map((link) => <NavLink key={link.href} {...link} />)} />
 
       <main className="mx-auto w-full max-w-[1080px] px-5 sm:px-10">
-        <section className="max-w-[800px] py-[clamp(64px,12vh,132px)]">
+        <section className="max-w-[800px] py-[clamp(48px,8vh,88px)]">
           <Eyebrow className="mb-5">Audio Law</Eyebrow>
           <AnimatedHero
             className="font-serif text-[clamp(2.9rem,6vw,4.6rem)] font-normal leading-[1.06] tracking-[-0.01em] text-ink"
@@ -51,7 +50,7 @@ export function LandingPage() {
               Começar a usar o sistema
             </PrimaryButton>
             <a
-              href="#como-funciona"
+              href="#recursos"
               className="text-sm text-accent underline underline-offset-4 hover:opacity-70"
             >
               Ver como funciona
@@ -59,14 +58,18 @@ export function LandingPage() {
           </div>
         </section>
 
-        <OrnamentalDivider />
+        <div className="flex flex-wrap items-center gap-x-8 gap-y-2 border-y border-surface-border/15 py-5 text-xs font-light uppercase tracking-[0.08em] text-muted/60">
+          <span>PDF <span className="text-accent">→</span> texto limpo <span className="text-accent">→</span> áudio</span>
+          <span>Capítulos identificados automaticamente</span>
+          <span>Arquivos MP3 prontos para baixar</span>
+        </div>
 
-        <section id="recursos" className="py-[clamp(56px,9vh,96px)]">
-          <Reveal as="p" className="mb-11">
+        <section id="recursos" className="py-[clamp(40px,6vh,72px)]">
+          <Reveal as="p" className="mb-8">
             <Eyebrow>Como funciona?</Eyebrow>
           </Reveal>
 
-          <div className="flex flex-col gap-14">
+          <div className="flex flex-col gap-10">
             <FeatureRow
               number="i."
               label="Leitura do PDF"
@@ -115,7 +118,7 @@ export function LandingPage() {
 
         <hr className="border-t border-surface-border/15" />
 
-        <section id="como-funciona" className="py-[clamp(64px,11vh,128px)]">
+        <section id="comecar" className="py-[clamp(48px,8vh,88px)]">
           <Reveal as="div" variant="curtain" className="max-w-[620px]">
             <Eyebrow className="mb-5">Comece agora</Eyebrow>
             <h2 className="mb-5 font-serif text-[clamp(2.1rem,4.5vw,3rem)] font-normal leading-[1.12] text-ink">
