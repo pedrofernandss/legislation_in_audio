@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import re
 
 class Text:
@@ -57,15 +59,42 @@ class Text:
         
         partes = re.split(chapter_regex_pattern, original_text)
 
+        if len(partes) < 3:
+            return {}
+
         chapters = {}
 
         for i in range(1, len(partes), 2):
+            if i + 1 >= len(partes):
+                break
             chapter_name = partes[i].strip()       
             chapter_content = partes[i+1].strip()             
             
             chapters[chapter_name] = chapter_content
 
         return chapters
+
+    def chunk_text(self, original_text: str, max_chars: int = 2400) -> list[str]:
+        paragraphs = [paragraph.strip() for paragraph in re.split(r"\n\s*\n", original_text) if paragraph.strip()]
+
+        if not paragraphs:
+            return []
+
+        chunks: list[str] = []
+        current_chunk = ""
+
+        for paragraph in paragraphs:
+            candidate = f"{current_chunk}\n\n{paragraph}".strip() if current_chunk else paragraph
+            if current_chunk and len(candidate) > max_chars:
+                chunks.append(current_chunk.strip())
+                current_chunk = paragraph
+            else:
+                current_chunk = candidate
+
+        if current_chunk:
+            chunks.append(current_chunk.strip())
+
+        return chunks
     
     def add_ssml_tags(self, text: str) -> str:
         text = re.sub(r'^#{3}\s*(.+)$', r"<emphasis level='reduced'>\1</emphasis>", text, flags=re.MULTILINE)
@@ -80,6 +109,7 @@ class Text:
     def clean(self, text: str) -> str:
         text = self.remove_markdown_artifacts(text)
         text = self.expand_legal_terms(text)
+        text = re.sub(r"\n{3,}", "\n\n", text)
 
         return text
     

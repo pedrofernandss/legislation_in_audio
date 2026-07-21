@@ -1,6 +1,9 @@
-import pymupdf.layout
-import pymupdf4llm
+from __future__ import annotations
+
 from pathlib import Path
+
+import pymupdf
+import pymupdf4llm
 
 class FileConverter:
     def __init__(self, temp_storage: str = "storage/temp"):
@@ -9,5 +12,7 @@ class FileConverter:
 
     def pdf_to_markdown(self, pdf_path: str):
         doc = pymupdf.open(pdf_path)
-
-        return pymupdf4llm.to_markdown(doc)
+        try:
+            return pymupdf4llm.to_markdown(doc)
+        finally:
+            doc.close()
