@@ -1,10 +1,31 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR" class="dark" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#070b14" />
+    <meta name="theme-color" content="#12171d" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f1f0eb" media="(prefers-color-scheme: light)" />
     <title>Audio Law</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Jost:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      (function () {
+        try {
+          var stored = window.localStorage.getItem('theme')
+          if (stored === 'light') {
+            document.documentElement.classList.remove('dark')
+            document.documentElement.classList.add('light')
+            document.documentElement.dataset.theme = 'light'
+          }
+        } catch (error) {
+          // localStorage indisponível (ex.: modo privado) — mantém o padrão dark
+        }
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -1,0 +1,155 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html.dark {
+  --color-bg: 18 23 29; /* #12171d */
+  --color-surface: 26 32 39; /* #1a2027 */
+  --color-surface-border: 241 240 235; /* ink-based border on dark */
+  --color-ink: 241 240 235; /* #f1f0eb */
+  --color-muted: 241 240 235;
+  --color-accent: 78 143 209; /* #4e8fd1, elegant blue brightened for contrast on dark */
+  --color-accent-hover: 106 163 222; /* #6aa3de */
+  --color-green: 76 168 115; /* #4ca873 */
+  --color-amber: 217 182 92; /* #d9b65c */
+  color-scheme: dark;
+}
+
+html.light {
+  --color-bg: 241 240 235; /* #f1f0eb, cinza claro/creme */
+  --color-surface: 250 250 247; /* #fafaf7 */
+  --color-surface-border: 29 78 137; /* blue-based border on light bg */
+  --color-ink: 27 34 42; /* #1b222a */
+  --color-muted: 27 34 42;
+  --color-accent: 29 78 137; /* #1d4e89, elegant navy blue */
+  --color-accent-hover: 22 61 108; /* #163d6c */
+  --color-green: 47 122 78; /* #2f7a4e */
+  --color-amber: 184 145 46; /* #b8912e */
+  color-scheme: light;
+}
+
+body {
+  @apply bg-bg text-ink font-sans antialiased transition-colors duration-200;
+}
+
+em {
+  @apply text-accent;
+  font-style: italic;
+}
+
+/* ---- animações de revelação ao rolar ---- */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+.reveal.delay-1 {
+  transition-delay: 0.08s;
+}
+.reveal.delay-2 {
+  transition-delay: 0.16s;
+}
+
+.reveal-focus {
+  opacity: 0;
+  filter: blur(9px);
+  transform: scale(1.03);
+  transition: opacity 0.7s ease, filter 0.9s ease, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal-focus.is-visible {
+  opacity: 1;
+  filter: blur(0);
+  transform: none;
+}
+
+.reveal-curtain {
+  opacity: 0;
+  clip-path: inset(-8% 50%);
+  transition: clip-path 1s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
+}
+.reveal-curtain.is-visible {
+  opacity: 1;
+  clip-path: inset(-8% -2%);
+}
+
+/* ---- hero: revelação letra por letra ---- */
+
+.hero-letter {
+  display: inline-block;
+  opacity: 0;
+  transform: translateX(-0.05em) rotate(-4deg);
+  clip-path: inset(-12% 102% -12% -6%);
+  transition: clip-path 0.34s cubic-bezier(0.22, 1, 0.36, 1) var(--ld, 0s),
+    transform 0.34s cubic-bezier(0.22, 1, 0.36, 1) var(--ld, 0s),
+    opacity 0.16s ease-out var(--ld, 0s);
+}
+.hero-armed.is-visible .hero-letter {
+  opacity: 1;
+  transform: none;
+  clip-path: inset(-12% -6% -12% -6%);
+}
+
+/* ---- ícone com linha de scan animada ---- */
+
+@keyframes scan-line {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(120px);
+    opacity: 0;
+  }
+}
+.scan-line {
+  animation: scan-line 3.6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse-dot {
+  0%,
+  60%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+}
+.pulse-dot {
+  animation: pulse-dot 1.1s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal-focus,
+  .reveal-curtain {
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    clip-path: none !important;
+  }
+  .hero-letter {
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+  }
+  .scan-line,
+  .pulse-dot {
+    animation: none !important;
+  }
+}
