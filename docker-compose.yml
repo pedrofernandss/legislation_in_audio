@@ -1,0 +1,23 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend.Dockerfile
+    environment:
+      AZURE_SPEECH_KEY: ${AZURE_SPEECH_KEY}
+      AZURE_SPEECH_REGION: ${AZURE_SPEECH_REGION}
+      AZURE_ENDPOINT: ${AZURE_ENDPOINT}
+      AZURE_SPEECH_VOICE: ${AZURE_SPEECH_VOICE:-pt-BR-ThalitaMultilingualNeural}
+    volumes:
+      - ./storage:/app/storage
+    expose:
+      - "8000"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:80"
+    depends_on:
+      - backend
