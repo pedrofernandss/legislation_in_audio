@@ -1,8 +1,14 @@
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? ''
+
+export function resolveApiUrl(path) {
+  return `${API_BASE_URL}${path}`
+}
+
 export async function convertPdf(file) {
   const formData = new FormData()
   formData.append('file', file)
 
-  const response = await fetch('/api/convert', {
+  const response = await fetch(resolveApiUrl('/api/convert'), {
     method: 'POST',
     body: formData,
   })
@@ -16,7 +22,7 @@ export async function convertPdf(file) {
 }
 
 export async function getJob(jobId) {
-  const response = await fetch(`/api/jobs/${jobId}`)
+  const response = await fetch(resolveApiUrl(`/api/jobs/${jobId}`))
   if (!response.ok) {
     throw new Error('Não foi possível obter o status do processamento.')
   }
