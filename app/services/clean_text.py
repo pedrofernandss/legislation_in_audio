@@ -2,6 +2,20 @@ from __future__ import annotations
 
 import re
 
+ROMAN_NUMERAL_VALUES = {"I": 1, "V": 5, "X": 10, "L": 50, "C": 100, "D": 500, "M": 1000}
+
+ORDINAL_UNITS_PT = {
+    1: "primeiro", 2: "segundo", 3: "terceiro", 4: "quarto", 5: "quinto",
+    6: "sexto", 7: "sétimo", 8: "oitavo", 9: "nono",
+}
+
+ORDINAL_TENS_PT = {
+    10: "décimo", 20: "vigésimo", 30: "trigésimo", 40: "quadragésimo",
+    50: "quinquagésimo", 60: "sexagésimo", 70: "septuagésimo",
+    80: "octogésimo", 90: "nonagésimo",
+}
+
+
 class Text:
     def __init__(self):
 
@@ -18,6 +32,51 @@ class Text:
         if number in self.ordinal_map:
             return f"{prefix} {self.ordinal_map[number]}"
         return f"{prefix} {number}"
+
+    def _roman_to_int(self, roman: str) -> int | None:
+        total = 0
+        previous_value = 0
+        for char in reversed(roman):
+            value = ROMAN_NUMERAL_VALUES.get(char)
+            if value is None:
+                return None
+            if value < previous_value:
+                total -= value
+            else:
+                total += value
+                previous_value = value
+        return total
+
+    def _int_to_ordinal_pt(self, number: int) -> str | None:
+        if number <= 0 or number >= 100:
+            return None
+        if number < 10:
+            return ORDINAL_UNITS_PT[number]
+
+        tens, units = divmod(number, 10)
+        tens_word = ORDINAL_TENS_PT.get(tens * 10)
+        if tens_word is None:
+            return None
+        if units == 0:
+            return tens_word
+        return f"{tens_word} {ORDINAL_UNITS_PT[units]}"
+
+    def _roman_to_ordinal_word(self, roman: str) -> str | None:
+        value = self._roman_to_int(roman)
+        if value is None:
+            return None
+        return self._int_to_ordinal_pt(value)
+
+    def _replace_heading_roman(self, match):
+        keyword = match.group(1)
+        roman = match.group(2)
+        ordinal = self._roman_to_ordinal_word(roman)
+        return f"{keyword} {ordinal}" if ordinal else match.group(0)
+
+    def _replace_inciso_roman(self, match):
+        indent, roman, suffix = match.group(1), match.group(2), match.group(3)
+        ordinal = self._roman_to_ordinal_word(roman)
+        return f"{indent}{ordinal}{suffix}" if ordinal else match.group(0)
 
     def expand_legal_terms(self, text: str) -> str:
 
@@ -39,6 +98,19 @@ class Text:
 
         ordinal_pattern = r'(\w+)\s*([1-9])[º°]'
         expanded_text = re.sub(ordinal_pattern, self._replace_ordinals, expanded_text, flags=re.IGNORECASE)
+
+        # "CAPÍTULO" is deliberately excluded here: split_text_by_chapters() splits on
+        # the literal "CAPÍTULO <roman numeral>" pattern, and that heading is only ever
+        # used as a segment title (never sent to TTS), so converting it would break
+        # chapter detection for no audible benefit.
+        heading_roman_pattern = r'(?i)\b(TÍTULO|SEÇÃO|LIVRO|PARTE)\s+([IVXLCDM]+)\b'
+        expanded_text = re.sub(heading_roman_pattern, self._replace_heading_roman, expanded_text)
+
+        # Roman-numeral inciso markers (e.g. "I - ...", "II - ...", "III) ...") are read
+        # aloud as part of the article's body, so spell them out as ordinal words instead
+        # of letting the TTS engine sound out the letters ("í", "vê"...).
+        inciso_roman_pattern = r'(?m)^(\s*)([IVXLCDM]+)(\s*[-–—)])'
+        expanded_text = re.sub(inciso_roman_pattern, self._replace_inciso_roman, expanded_text)
 
         return expanded_text
 
