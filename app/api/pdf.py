@@ -24,8 +24,16 @@ def _job_paths(job_id: str) -> Path:
 def _run_pipeline(job_id: str, pdf_path: Path, file_name: str):
     try:
         job_store.update_status(job_id, JobStatus.processing)
-        result = pipeline.process(job_id=job_id, pdf_path=str(pdf_path), file_name=file_name)
-        job_store.complete(job_id, result)
+        pipeline.process(
+            job_id=job_id,
+            pdf_path=str(pdf_path),
+            file_name=file_name,
+            on_text_ready=lambda markdown, cleaned_text, total_segments: job_store.init_result(
+                job_id, markdown, cleaned_text, total_segments
+            ),
+            on_segment_ready=lambda segment: job_store.add_segment(job_id, segment),
+        )
+        job_store.complete(job_id)
     except Exception as exc:  # noqa: BLE001
         job_store.fail(job_id, str(exc))
     finally:

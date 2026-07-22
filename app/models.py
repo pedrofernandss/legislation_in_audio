@@ -33,6 +33,7 @@ class JobRecord(BaseModel):
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
     result: DocumentResult | None = None
+    total_segments: int | None = None
     error: str | None = None
 
 
@@ -43,4 +44,5 @@ class JobResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
     result: DocumentResult | None = None
+    total_segments: int | None = None
     error: str | None = None

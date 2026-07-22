@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import re
 from pathlib import Path
+from typing import Callable
 
 from app.models import DocumentResult, SegmentResult
 from app.services.audio import generate_tts
@@ -26,10 +27,20 @@ class DocumentProcessingPipeline:
             return list(chapters.items())
         return [(None, chunk) for chunk in self.cleaner.chunk_text(cleaned_text)]
 
-    def process(self, job_id: str, pdf_path: str, file_name: str) -> DocumentResult:
+    def process(
+        self,
+        job_id: str,
+        pdf_path: str,
+        file_name: str,
+        on_text_ready: Callable[[str, str, int], None] | None = None,
+        on_segment_ready: Callable[[SegmentResult], None] | None = None,
+    ) -> DocumentResult:
         markdown = self.converter.pdf_to_markdown(pdf_path)
         cleaned_text = self.cleaner.clean(markdown)
         segments = self._build_segments(cleaned_text)
+
+        if on_text_ready:
+            on_text_ready(markdown, cleaned_text, len(segments))
 
         job_dir = self.output_dir / job_id
         audio_dir = job_dir / "audio"
@@ -40,13 +51,14 @@ class DocumentProcessingPipeline:
             label = self._slugify(title or f"segment-{index}")
             audio_file = audio_dir / f"{index:02d}-{label}.mp3"
             generate_tts(segment_text, output_path=str(audio_file), use_ssml=False)
-            results.append(
-                SegmentResult(
-                    title=title,
-                    text=segment_text,
-                    audio_file=audio_file.name,
-                    download_url=f"/api/jobs/{job_id}/audio/{audio_file.name}",
-                )
+            segment = SegmentResult(
+                title=title,
+                text=segment_text,
+                audio_file=audio_file.name,
+                download_url=f"/api/jobs/{job_id}/audio/{audio_file.name}",
             )
+            results.append(segment)
+            if on_segment_ready:
+                on_segment_ready(segment)
 
         return DocumentResult(markdown=markdown, cleaned_text=cleaned_text, segments=results)

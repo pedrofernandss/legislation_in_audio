@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from threading import Lock
 
-from app.models import DocumentResult, JobRecord, JobResponse, JobStatus
+from app.models import DocumentResult, JobRecord, JobResponse, JobStatus, SegmentResult
 
 
 class JobStore:
@@ -30,12 +30,28 @@ class JobStore:
             self._jobs[job_id] = record
             return record
 
-    def complete(self, job_id: str, result: DocumentResult) -> JobRecord:
+    def init_result(self, job_id: str, markdown: str, cleaned_text: str, total_segments: int) -> JobRecord:
+        with self._lock:
+            record = self._jobs[job_id]
+            record.result = DocumentResult(markdown=markdown, cleaned_text=cleaned_text, segments=[])
+            record.total_segments = total_segments
+            record.updated_at = datetime.utcnow()
+            self._jobs[job_id] = record
+            return record
+
+    def add_segment(self, job_id: str, segment: SegmentResult) -> JobRecord:
+        with self._lock:
+            record = self._jobs[job_id]
+            record.result.segments.append(segment)
+            record.updated_at = datetime.utcnow()
+            self._jobs[job_id] = record
+            return record
+
+    def complete(self, job_id: str) -> JobRecord:
         with self._lock:
             record = self._jobs[job_id]
             record.status = JobStatus.completed
             record.updated_at = datetime.utcnow()
-            record.result = result
             record.error = None
             self._jobs[job_id] = record
             return record
@@ -52,5 +68,6 @@ class JobStore:
             created_at=record.created_at,
             updated_at=record.updated_at,
             result=record.result,
+            total_segments=record.total_segments,
             error=record.error,
         )
