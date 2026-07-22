@@ -11,7 +11,7 @@ html.dark {
   --color-accent: 78 143 209; /* #4e8fd1, elegant blue brightened for contrast on dark */
   --color-accent-hover: 106 163 222; /* #6aa3de */
   --color-green: 76 168 115; /* #4ca873 */
-  --color-amber: 217 182 92; /* #d9b65c */
+  --color-amber: 227 192 101; /* #e3c065, warmer/more yellow, still elegant on dark */
   color-scheme: dark;
 }
 
@@ -24,7 +24,7 @@ html.light {
   --color-accent: 29 78 137; /* #1d4e89, elegant navy blue */
   --color-accent-hover: 22 61 108; /* #163d6c */
   --color-green: 47 122 78; /* #2f7a4e */
-  --color-amber: 184 145 46; /* #b8912e */
+  --color-amber: 201 162 39; /* #c9a227, warmer/more yellow, still elegant not neon */
   color-scheme: light;
 }
 

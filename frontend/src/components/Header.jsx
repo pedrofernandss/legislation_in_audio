@@ -9,7 +9,7 @@ export function Header({ center = null }) {
         onClick={() => navigate('/')}
         className="font-serif text-xl text-ink transition-opacity hover:opacity-80"
       >
-        Audio Law
+        Lei em Voz
       </button>
 
       {center ? <nav className="hidden gap-9 sm:flex">{center}</nav> : null}

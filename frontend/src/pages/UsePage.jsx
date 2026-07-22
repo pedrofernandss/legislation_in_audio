@@ -108,9 +108,9 @@ export function UsePage() {
       </main>
 
       <footer className="mt-auto flex flex-wrap items-center justify-between gap-4 border-t border-surface-border/15 px-5 py-6 sm:px-10">
-        <span className="font-serif text-sm text-ink">Audio Law</span>
+        <span className="font-serif text-sm text-ink">Lei em Voz</span>
         <p className="text-[10px] font-normal uppercase tracking-[0.2em] text-muted/40">
-          © 2026 Audio Law
+          © 2026 Lei em Voz
         </p>
       </footer>
     </div>

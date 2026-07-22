@@ -32,7 +32,7 @@ export function LandingPage() {
 
       <main className="mx-auto w-full max-w-[1080px] px-5 sm:px-10">
         <section className="max-w-[800px] py-[clamp(48px,8vh,88px)]">
-          <Eyebrow className="mb-5">Audio Law</Eyebrow>
+          <Eyebrow className="mb-5">Lei em Voz</Eyebrow>
           <AnimatedHero
             className="font-serif text-[clamp(2.9rem,6vw,4.6rem)] font-normal leading-[1.06] tracking-[-0.01em] text-ink"
             segments={[
@@ -59,7 +59,7 @@ export function LandingPage() {
         </section>
 
         <div className="flex flex-wrap items-center gap-x-8 gap-y-2 border-y border-surface-border/15 py-5 text-xs font-light uppercase tracking-[0.08em] text-muted/60">
-          <span>PDF <span className="text-accent">→</span> texto limpo <span className="text-accent">→</span> áudio</span>
+          <span>PDF <span className="text-green">→</span> texto limpo <span className="text-amber">→</span> áudio</span>
           <span>Capítulos identificados automaticamente</span>
           <span>Arquivos MP3 prontos para baixar</span>
         </div>
@@ -74,6 +74,7 @@ export function LandingPage() {
               number="i."
               label="Leitura do PDF"
               variant="focus"
+              color="green"
               icon={<DocumentScanIcon />}
               title={
                 <>
@@ -90,6 +91,7 @@ export function LandingPage() {
               label="Segmentação"
               variant="fade"
               reverse
+              color="accent"
               icon={<ChaptersIcon />}
               title={
                 <>
@@ -105,6 +107,7 @@ export function LandingPage() {
               number="iii."
               label="Geração de áudio"
               variant="curtain"
+              color="amber"
               icon={<WaveformIcon />}
               title={
                 <>
@@ -135,9 +138,9 @@ export function LandingPage() {
       </main>
 
       <footer className="mt-auto flex flex-wrap items-center justify-between gap-4 border-t border-surface-border/15 px-5 py-6 sm:px-10">
-        <span className="font-serif text-sm text-ink">Audio Law</span>
+        <span className="font-serif text-sm text-ink">Lei em Voz</span>
         <p className="text-[10px] font-normal uppercase tracking-[0.2em] text-muted/40">
-          © 2026 Audio Law
+          © 2026 Lei em Voz
         </p>
       </footer>
     </div>
