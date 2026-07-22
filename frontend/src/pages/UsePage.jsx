@@ -1,8 +1,7 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { navigate } from '../lib/router'
 import { convertPdf } from '../lib/api'
-import { useJobPolling } from '../hooks/useJobPolling'
-import { STATUS_PROGRESS } from '../constants/status'
+import { useJobsList } from '../hooks/useJobsList'
 import { Header } from '../components/Header'
 import { Eyebrow } from '../components/Eyebrow'
 import { SectionNumber } from '../components/SectionNumber'
@@ -10,23 +9,13 @@ import { Reveal } from '../components/Reveal'
 import { PrimaryButton } from '../components/PrimaryButton'
 import { UploadForm } from '../components/UploadForm'
 import { ErrorMessage } from '../components/ErrorMessage'
-import { JobStatusPanel } from '../components/JobStatusPanel'
-import { StatsGrid } from '../components/StatsGrid'
-import { SegmentList } from '../components/SegmentList'
+import { JobCard } from '../components/JobCard'
 
 export function UsePage() {
   const [file, setFile] = useState(null)
-  const [jobId, setJobId] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState('')
-
-  const { job, error: pollError } = useJobPolling(jobId)
-  const error = submitError || pollError
-
-  const progress = useMemo(() => {
-    if (!job) return 0
-    return STATUS_PROGRESS[job.status] ?? 0
-  }, [job])
+  const { jobs, addJob, removeJob } = useJobsList()
 
   async function handleSubmit(event) {
     event.preventDefault()
@@ -40,15 +29,14 @@ export function UsePage() {
     setIsSubmitting(true)
     try {
       const data = await convertPdf(file)
-      setJobId(data.job_id)
+      addJob(data.job_id, file.name)
+      setFile(null)
     } catch (submitErr) {
       setSubmitError(submitErr.message)
     } finally {
       setIsSubmitting(false)
     }
   }
-
-  const totalSegments = job?.result?.segments?.length ?? 0
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -63,7 +51,8 @@ export function UsePage() {
             </h1>
             <p className="font-light leading-[1.65] text-muted/60">
               Simples assim: envie o arquivo, aguarde o processamento e revise os trechos
-              gerados.
+              gerados. Você pode enviar mais de um PDF — cada um aparece na sua própria lista
+              abaixo.
             </p>
           </div>
 
@@ -75,40 +64,46 @@ export function UsePage() {
         <hr className="border-t border-surface-border/15" />
 
         <section className="py-[clamp(32px,5vh,56px)]">
-          <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
-            <Reveal as="div" variant="fade">
-              <SectionNumber>i.</SectionNumber>
-              <Eyebrow className="mb-3.5">Enviar arquivo</Eyebrow>
-              <div className="flex flex-col gap-4">
-                <UploadForm
-                  file={file}
-                  onFileChange={setFile}
-                  onSubmit={handleSubmit}
-                  isSubmitting={isSubmitting}
-                />
-                <ErrorMessage message={error} />
-              </div>
-            </Reveal>
-
-            <Reveal as="div" variant="fade" delay={1}>
-              <SectionNumber>ii.</SectionNumber>
-              <Eyebrow className="mb-3.5">Status</Eyebrow>
-              <div className="flex flex-col gap-4">
-                <JobStatusPanel jobId={jobId} status={job?.status} progress={progress} />
-                <StatsGrid segmentCount={totalSegments} />
-              </div>
-            </Reveal>
-          </div>
+          <Reveal as="div" variant="fade" className="max-w-lg">
+            <SectionNumber>i.</SectionNumber>
+            <Eyebrow className="mb-3.5">Enviar arquivo</Eyebrow>
+            <div className="flex flex-col gap-4">
+              <UploadForm
+                file={file}
+                onFileChange={setFile}
+                onSubmit={handleSubmit}
+                isSubmitting={isSubmitting}
+              />
+              <ErrorMessage message={submitError} />
+            </div>
+          </Reveal>
         </section>
 
         <hr className="border-t border-surface-border/15" />
 
         <section className="py-[clamp(40px,6vh,72px)]">
           <Reveal as="div" variant="focus" className="mb-8">
-            <SectionNumber>iii.</SectionNumber>
-            <Eyebrow>Resultados</Eyebrow>
+            <SectionNumber>ii.</SectionNumber>
+            <Eyebrow>Suas conversões</Eyebrow>
           </Reveal>
-          <SegmentList segments={job?.result?.segments ?? []} />
+
+          {jobs.length ? (
+            <div className="flex flex-col gap-6">
+              {jobs.map((job) => (
+                <JobCard
+                  key={job.jobId}
+                  jobId={job.jobId}
+                  fileName={job.fileName}
+                  onRemove={removeJob}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-sm border border-dashed border-surface-border/20 px-6 py-10 text-center text-sm font-light text-muted/60">
+              Suas conversões vão aparecer aqui, uma abaixo da outra, assim que você enviar um
+              PDF.
+            </div>
+          )}
         </section>
       </main>
 
