@@ -1,6 +1,13 @@
 import { formatStatus } from '../constants/status'
 
-export function JobStatusPanel({ jobId, status, progress }) {
+function progressCaption(status, segmentsReady, totalSegments) {
+  if (status === 'completed') return 'Áudio pronto para ouvir ou baixar.'
+  if (status === 'failed') return 'O processamento falhou. Veja o erro abaixo.'
+  if (totalSegments) return `${segmentsReady} de ${totalSegments} trechos prontos.`
+  return 'Lendo e limpando o texto do PDF...'
+}
+
+export function JobStatusPanel({ jobId, status, progress, segmentsReady = 0, totalSegments = null }) {
   return (
     <div className="rounded-sm border border-surface-border/15 bg-surface p-6">
       <p className="text-[11px] font-normal uppercase tracking-[0.2em] text-muted/60">Status</p>
@@ -22,7 +29,7 @@ export function JobStatusPanel({ jobId, status, progress }) {
       </div>
 
       <p className="mt-4 text-xs font-light text-muted/50">
-        O sistema gera um identificador de processamento e o atualiza até o áudio ficar pronto.
+        {progressCaption(status, segmentsReady, totalSegments)}
       </p>
     </div>
   )
