@@ -1,1 +1,1 @@
-"""Audio Law application package."""
+"""Lei em Voz application package."""

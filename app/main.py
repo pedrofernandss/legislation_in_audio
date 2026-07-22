@@ -7,7 +7,7 @@ from app.api.pdf import legislation_router
 
 
 def create_app() -> FastAPI:
-    app = FastAPI(title="Audio Law", version="0.2.0")
+    app = FastAPI(title="Lei em Voz", version="0.2.0")
 
     app.add_middleware(
         CORSMiddleware,
