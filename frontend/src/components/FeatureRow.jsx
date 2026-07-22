@@ -2,6 +2,12 @@ import { Reveal } from './Reveal'
 import { Eyebrow } from './Eyebrow'
 import { SectionNumber } from './SectionNumber'
 
+const PANEL_CLASSES = {
+  accent: 'border-accent/20 bg-accent/[0.06]',
+  green: 'border-green/20 bg-green/[0.06]',
+  amber: 'border-amber/20 bg-amber/[0.06]',
+}
+
 export function FeatureRow({
   number,
   label,
@@ -27,7 +33,11 @@ export function FeatureRow({
         <p className="max-w-md font-light leading-[1.7] text-muted/60">{description}</p>
       </div>
 
-      <div className="flex justify-center">{icon}</div>
+      <div
+        className={`flex items-center justify-center rounded-sm border p-10 sm:p-14 ${PANEL_CLASSES[color] ?? PANEL_CLASSES.amber}`}
+      >
+        {icon}
+      </div>
     </Reveal>
   )
 }
